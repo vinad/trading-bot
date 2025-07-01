@@ -1,0 +1,113 @@
+{
+  "period": "2025-05-23 to 2025-06-20",
+  "initial_capital": 100000,
+  "final_value": 100000,
+  "total_return_pct": 0.0,
+  "total_return_dollar": 0,
+  "total_trades": 0,
+  "win_rate_pct": 0,
+  "avg_win": 0,
+  "avg_loss": 0,
+  "volatility_pct": 0.0,
+  "sharpe_ratio": 0,
+  "max_drawdown_pct": 0,
+  "strategy_performance": {},
+  "trade_history": [],
+  "equity_curve": [
+    {
+      "date": "2025-05-23 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-27 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-28 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-29 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-30 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-02 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-03 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-04 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-05 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-06 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-09 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-10 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-11 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-12 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-13 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-16 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-17 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-18 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-20 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    }
+  ]
+}
