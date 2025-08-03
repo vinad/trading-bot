@@ -1,0 +1,541 @@
+{
+  "period": "2025-05-19 to 2025-07-16",
+  "initial_capital": 100000,
+  "final_value": 102896.79226875305,
+  "total_return_pct": 2.896792268753052,
+  "total_return_dollar": 2896.7922687530518,
+  "total_trades": 12,
+  "win_rate_pct": 25.0,
+  "avg_win": 340.2080821990967,
+  "avg_loss": -85.5588550567627,
+  "volatility_pct": 6.331347814448309,
+  "sharpe_ratio": 2.946812665862391,
+  "max_drawdown_pct": 0.7698630209074553,
+  "strategy_performance": {
+    "mean_reversion": {
+      "total_trades": 1,
+      "total_pnl": 650.0015258789062,
+      "avg_pnl": 650.0015258789062
+    },
+    "momentum": {
+      "total_trades": 2,
+      "total_pnl": -1.7700176239013672,
+      "avg_pnl": -0.8850088119506836
+    },
+    "rsi": {
+      "total_trades": 1,
+      "total_pnl": -51.65789794921875,
+      "avg_pnl": -51.65789794921875
+    },
+    "vwap": {
+      "total_trades": 7,
+      "total_pnl": 170.79302978515625,
+      "avg_pnl": 24.399004255022323
+    },
+    "parabolic_sar": {
+      "total_trades": 1,
+      "total_pnl": -88.97781372070312,
+      "avg_pnl": -88.97781372070312
+    }
+  },
+  "trade_history": [
+    {
+      "date": "2025-07-01 00:00:00",
+      "symbol": "GM",
+      "action": "BUY",
+      "qty": 1000,
+      "price": 52.029998779296875,
+      "value": 52029.998779296875,
+      "strategy": "parabolic_sar",
+      "capital_after": 47970.001220703125
+    },
+    {
+      "date": "2025-07-02 00:00:00",
+      "symbol": "AAPL",
+      "action": "BUY",
+      "qty": 225,
+      "price": 212.44000244140625,
+      "value": 47799.000549316406,
+      "strategy": "momentum",
+      "capital_after": 171.00067138671875
+    },
+    {
+      "date": "2025-07-02 00:00:00",
+      "symbol": "AAPL",
+      "action": "SELL",
+      "qty": 225,
+      "price": 212.44000244140625,
+      "value": 47799.000549316406,
+      "strategy": "vwap",
+      "buy_price": 212.44000244140625,
+      "pnl": 0.0,
+      "pnl_pct": 0.0,
+      "capital_after": 47970.001220703125
+    },
+    {
+      "date": "2025-07-02 00:00:00",
+      "symbol": "GM",
+      "action": "SELL",
+      "qty": 1000,
+      "price": 52.68000030517578,
+      "value": 52680.00030517578,
+      "strategy": "mean_reversion",
+      "buy_price": 52.029998779296875,
+      "pnl": 650.0015258789062,
+      "pnl_pct": 1.2492822239648922,
+      "capital_after": 100650.0015258789
+    },
+    {
+      "date": "2025-07-07 00:00:00",
+      "symbol": "BA",
+      "action": "BUY",
+      "qty": 460,
+      "price": 218.6300048828125,
+      "value": 100569.80224609375,
+      "strategy": "momentum",
+      "capital_after": 80.19927978515625
+    },
+    {
+      "date": "2025-07-07 00:00:00",
+      "symbol": "BA",
+      "action": "SELL",
+      "qty": 460,
+      "price": 218.6300048828125,
+      "value": 100569.80224609375,
+      "strategy": "vwap",
+      "buy_price": 218.6300048828125,
+      "pnl": 0.0,
+      "pnl_pct": 0.0,
+      "capital_after": 100650.0015258789
+    },
+    {
+      "date": "2025-07-07 00:00:00",
+      "symbol": "VZ",
+      "action": "BUY",
+      "qty": 1000,
+      "price": 42.11897659301758,
+      "value": 42118.97659301758,
+      "strategy": "vwap",
+      "capital_after": 58531.02493286133
+    },
+    {
+      "date": "2025-07-08 00:00:00",
+      "symbol": "XOM",
+      "action": "BUY",
+      "qty": 512,
+      "price": 114.19000244140625,
+      "value": 58465.28125,
+      "strategy": "parabolic_sar",
+      "capital_after": 65.74368286132812
+    },
+    {
+      "date": "2025-07-09 00:00:00",
+      "symbol": "XOM",
+      "action": "SELL",
+      "qty": 512,
+      "price": 113.80000305175781,
+      "value": 58265.6015625,
+      "strategy": "vwap",
+      "buy_price": 114.19000244140625,
+      "pnl": -199.6796875,
+      "pnl_pct": -0.3415354946231444,
+      "capital_after": 58331.34524536133
+    },
+    {
+      "date": "2025-07-09 00:00:00",
+      "symbol": "CVX",
+      "action": "BUY",
+      "qty": 381,
+      "price": 153.02000427246094,
+      "value": 58300.62162780762,
+      "strategy": "macd",
+      "capital_after": 30.723617553710938
+    },
+    {
+      "date": "2025-07-09 00:00:00",
+      "symbol": "CVX",
+      "action": "SELL",
+      "qty": 381,
+      "price": 153.02000427246094,
+      "value": 58300.62162780762,
+      "strategy": "vwap",
+      "buy_price": 153.02000427246094,
+      "pnl": 0.0,
+      "pnl_pct": 0.0,
+      "capital_after": 58331.34524536133
+    },
+    {
+      "date": "2025-07-10 00:00:00",
+      "symbol": "TSLA",
+      "action": "BUY",
+      "qty": 188,
+      "price": 309.8699951171875,
+      "value": 58255.55908203125,
+      "strategy": "stochastic",
+      "capital_after": 75.78616333007812
+    },
+    {
+      "date": "2025-07-10 00:00:00",
+      "symbol": "VZ",
+      "action": "SELL",
+      "qty": 1000,
+      "price": 42.029998779296875,
+      "value": 42029.998779296875,
+      "strategy": "parabolic_sar",
+      "buy_price": 42.11897659301758,
+      "pnl": -88.97781372070312,
+      "pnl_pct": -0.2112535035702974,
+      "capital_after": 42105.78494262695
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "GOOGL",
+      "action": "BUY",
+      "qty": 233,
+      "price": 180.19000244140625,
+      "value": 41984.270568847656,
+      "strategy": "macd",
+      "capital_after": 121.51437377929688
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "GOOGL",
+      "action": "SELL",
+      "qty": 233,
+      "price": 180.19000244140625,
+      "value": 41984.270568847656,
+      "strategy": "vwap",
+      "buy_price": 180.19000244140625,
+      "pnl": 0.0,
+      "pnl_pct": 0.0,
+      "capital_after": 42105.78494262695
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "AMD",
+      "action": "BUY",
+      "qty": 287,
+      "price": 146.4199981689453,
+      "value": 42022.539474487305,
+      "strategy": "parabolic_sar",
+      "capital_after": 83.24546813964844
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "BP",
+      "action": "BUY",
+      "qty": 2,
+      "price": 32.63999938964844,
+      "value": 65.27999877929688,
+      "strategy": "macd",
+      "capital_after": 17.965469360351562
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "BP",
+      "action": "SELL",
+      "qty": 2,
+      "price": 32.63999938964844,
+      "value": 65.27999877929688,
+      "strategy": "vwap",
+      "buy_price": 32.63999938964844,
+      "pnl": 0.0,
+      "pnl_pct": 0.0,
+      "capital_after": 83.24546813964844
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "symbol": "T",
+      "action": "BUY",
+      "qty": 3,
+      "price": 26.969999313354492,
+      "value": 80.90999794006348,
+      "strategy": "mean_reversion",
+      "capital_after": 2.335470199584961
+    },
+    {
+      "date": "2025-07-14 00:00:00",
+      "symbol": "AMD",
+      "action": "SELL",
+      "qty": 287,
+      "price": 146.24000549316406,
+      "value": 41970.881576538086,
+      "strategy": "rsi",
+      "buy_price": 146.4199981689453,
+      "pnl": -51.65789794921875,
+      "pnl_pct": -0.12292902474535423,
+      "capital_after": 41973.21704673767
+    },
+    {
+      "date": "2025-07-14 00:00:00",
+      "symbol": "GE",
+      "action": "BUY",
+      "qty": 159,
+      "price": 262.3399963378906,
+      "value": 41712.05941772461,
+      "strategy": "parabolic_sar",
+      "capital_after": 261.1576290130615
+    },
+    {
+      "date": "2025-07-14 00:00:00",
+      "symbol": "VZ",
+      "action": "BUY",
+      "qty": 6,
+      "price": 41.58000183105469,
+      "value": 249.48001098632812,
+      "strategy": "momentum",
+      "capital_after": 11.677618026733398
+    },
+    {
+      "date": "2025-07-15 00:00:00",
+      "symbol": "GE",
+      "action": "SELL",
+      "qty": 159,
+      "price": 264.6700134277344,
+      "value": 42082.532135009766,
+      "strategy": "vwap",
+      "buy_price": 262.3399963378906,
+      "pnl": 370.47271728515625,
+      "pnl_pct": 0.8881669293166861,
+      "capital_after": 42094.2097530365
+    },
+    {
+      "date": "2025-07-15 00:00:00",
+      "symbol": "T",
+      "action": "SELL",
+      "qty": 3,
+      "price": 27.020000457763672,
+      "value": 81.06000137329102,
+      "strategy": "momentum",
+      "buy_price": 26.969999313354492,
+      "pnl": 0.15000343322753906,
+      "pnl_pct": 0.18539542336740467,
+      "capital_after": 42175.26975440979
+    },
+    {
+      "date": "2025-07-15 00:00:00",
+      "symbol": "VZ",
+      "action": "SELL",
+      "qty": 6,
+      "price": 41.2599983215332,
+      "value": 247.55998992919922,
+      "strategy": "momentum",
+      "buy_price": 41.58000183105469,
+      "pnl": -1.9200210571289062,
+      "pnl_pct": -0.7696091761171705,
+      "capital_after": 42422.82974433899
+    },
+    {
+      "date": "2025-07-16 00:00:00",
+      "symbol": "GE",
+      "action": "BUY",
+      "qty": 159,
+      "price": 266.17999267578125,
+      "value": 42322.61883544922,
+      "strategy": "breakout",
+      "capital_after": 100.21090888977051
+    }
+  ],
+  "equity_curve": [
+    {
+      "date": "2025-05-19 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-20 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-21 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-22 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-23 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-27 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-28 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-29 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-05-30 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-02 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-03 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-04 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-05 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-06 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-09 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-10 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-11 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-12 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-13 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-16 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-17 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-18 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-20 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-23 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-24 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-25 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-26 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-27 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-06-30 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-01 00:00:00",
+      "portfolio_value": 100000.0,
+      "cash": 47970.001220703125
+    },
+    {
+      "date": "2025-07-02 00:00:00",
+      "portfolio_value": 100650.0015258789,
+      "cash": 100650.0015258789
+    },
+    {
+      "date": "2025-07-03 00:00:00",
+      "portfolio_value": 100650.0015258789,
+      "cash": 100650.0015258789
+    },
+    {
+      "date": "2025-07-07 00:00:00",
+      "portfolio_value": 100650.0015258789,
+      "cash": 58531.02493286133
+    },
+    {
+      "date": "2025-07-08 00:00:00",
+      "portfolio_value": 100905.86471557617,
+      "cash": 65.74368286132812
+    },
+    {
+      "date": "2025-07-09 00:00:00",
+      "portfolio_value": 100263.3444519043,
+      "cash": 58331.34524536133
+    },
+    {
+      "date": "2025-07-10 00:00:00",
+      "portfolio_value": 100361.3440246582,
+      "cash": 42105.78494262695
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "portfolio_value": 101045.66677856445,
+      "cash": 2.335470199584961
+    },
+    {
+      "date": "2025-07-14 00:00:00",
+      "portfolio_value": 101631.89589881897,
+      "cash": 11.677618026733398
+    },
+    {
+      "date": "2025-07-15 00:00:00",
+      "portfolio_value": 100849.4695148468,
+      "cash": 42422.82974433899
+    },
+    {
+      "date": "2025-07-16 00:00:00",
+      "portfolio_value": 102896.79226875305,
+      "cash": 100.21090888977051
+    }
+  ]
+}

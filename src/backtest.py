@@ -10,7 +10,7 @@ import time
 import random
 
 # Import your existing strategy classes
-from enhanced_trading_bot import MeanReversionStrategy, MomentumStrategy, RSIStrategy
+from enhanced_trading_bot import MeanReversionStrategy, MomentumStrategy, RSIStrategy, MACDStrategy, BollingerBandsStrategy, VWAPStrategy, StochasticStrategy, ParabolicSARStrategy, BreakoutStrategy
 from enhanced_config import Config
 
 logging.basicConfig(level=logging.INFO)
@@ -23,39 +23,27 @@ class BacktestEngine:
         self.positions = {}  # symbol: {'qty': int, 'avg_price': float}
         self.trade_history = []
         self.equity_curve = []
+        # self.strategies = {
+        #     'mean_reversion': MeanReversionStrategy(),
+        #     'momentum': MomentumStrategy(),
+        #     'rsi': RSIStrategy()
+        # }
         self.strategies = {
-            'mean_reversion': MeanReversionStrategy(),
-            'momentum': MomentumStrategy(),
-            'rsi': RSIStrategy()
+            'mean_reversion': MeanReversionStrategy()
+            ,'momentum': MomentumStrategy()
+            ,'rsi': RSIStrategy()
+            ,'macd': MACDStrategy()
+            ,'bollinger_bands': BollingerBandsStrategy()
+            ,'vwap': VWAPStrategy()
+            ,'stochastic': StochasticStrategy()
+            ,'parabolic_sar': ParabolicSARStrategy()
+            ,'breakout': BreakoutStrategy()
         }
         # Add this session configuration
         self.session = requests.Session()
         self.session.headers.update({
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
-        
-    # def get_historical_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
-    #     """Get historical data for backtesting"""
-    #     try:
-    #         # ticker = yf.Ticker(symbol)
-    #         # data = ticker.history(start=start_date, end=end_date, interval='1d')
-    #         data = yf.download(symbol, start=start_date, end=end_date, interval='1d', progress=False)
-    #         return data
-    #     except Exception as e:
-    #         logger.error(f"Error fetching data for {symbol}: {e}")
-    #         return pd.DataFrame()
-        
-    # def get_historical_data(self, symbol: str, start_date: str, end_date: str) -> pd.DataFrame:
-    #     """Get historical data for backtesting using yfinance.download"""
-    #     try:
-    #         data = yf.download(symbol, start=start_date, end=end_date, interval='1d', progress=False)
-    #         if data.empty:
-    #             logger.error(f"{symbol}: No data returned from yfinance")
-    #         return data
-    #     except Exception as e:
-    #         logger.error(f"Error fetching data for {symbol}: {e}")
-    #         return pd.DataFrame()
-
     
     def get_historical_data(self, symbol: str, start_date: str, end_date: str, max_retries: int = 3) -> pd.DataFrame:
         """Get historical data for backtesting with enhanced error handling"""
@@ -226,19 +214,6 @@ class BacktestEngine:
                     
                     except Exception as e:
                         logger.error(f"Error running {strategy_name} for {symbol} on {date}: {e}")
-
-
-                # # Run each strategy
-                # for strategy_name, strategy in self.strategies.items():
-                #     try:
-                #         signal_data = strategy.generate_signals(historical_data)
-                #         signal = signal_data['signal']
-                        
-                #         if signal in ['buy', 'sell']:
-                #             self.execute_backtest_trade(symbol, signal, current_price, date_dt, strategy_name)
-                    
-                #     except Exception as e:
-                #         logger.error(f"Error running {strategy_name} for {symbol} on {date}: {e}")
             
             # Record equity curve
             portfolio_value = self.calculate_portfolio_value(date_dt, current_prices)
@@ -404,9 +379,9 @@ def run_backtest_example():
     backtest = BacktestEngine(initial_capital=100000)
     
     # Define test parameters
-    symbols = ['AAPL', 'MSFT', 'GOOGL', 'TSLA','UBER']# ,'AMD','NVDA','INTC','IBM','F','GM','GE','BA','CAT','MMM','XOM','CVX','BP','T','VZ']
-    end_date = datetime.now().strftime('%Y-%m-%d')
-    start_date = (datetime.now() - timedelta(days=360)).strftime('%Y-%m-%d')
+    symbols = ['AAPL', 'MSFT', 'GOOGL', 'TSLA','UBER','AMD','NVDA','INTC','IBM','F','GM','GE','BA','CAT','MMM','XOM','CVX','BP','T','VZ']
+    end_date = datetime.now().strftime('%Y-%m-%d')#'2025-04-17'
+    start_date = (datetime.now() - timedelta(days=200)).strftime('%Y-%m-%d')#'2025-01-01'
     
     # First, debug the strategies
     backtest.debug_strategy_signals(symbols, start_date, end_date)

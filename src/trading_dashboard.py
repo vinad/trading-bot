@@ -227,7 +227,7 @@ class TradingDashboard:
             account = self.get_account_summary()
             self.start_equity = account.get('equity', 0)
         except:
-            self.start_equity = 0
+            self.start_equity = 0                                                  
         
         self.running = True
         

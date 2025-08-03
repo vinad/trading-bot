@@ -35,8 +35,8 @@ class Config:
     EXTENDED_HOURS_SCAN_INTERVAL = int(os.getenv('EXTENDED_HOURS_SCAN_INTERVAL', 600))  # 10 minutes for extended hours
     
     # Strategy Configuration
-    STRATEGIES_REGULAR_HOURS = ['mean_reversion', 'momentum', 'rsi']
-    STRATEGIES_EXTENDED_HOURS = ['momentum', 'rsi']  # Fewer strategies for extended hours
+    STRATEGIES_REGULAR_HOURS = ['mean_reversion', 'momentum', 'rsi','macd','bollinger_bands','vwap','stochastic','parabolic_sar','breakout'] 
+    STRATEGIES_EXTENDED_HOURS = ['mean_reversion','rsi','macd','bollinger_bands','vwap','stochastic','parabolic_sar','breakout']
     
     # Performance and Monitoring
     PERFORMANCE_REPORT_INTERVAL = int(os.getenv('PERFORMANCE_REPORT_INTERVAL', 12))  # Every 12 scans

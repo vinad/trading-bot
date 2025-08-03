@@ -14,6 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import pytz
 from enhanced_config import Config
+import talib
 
 
 # Configure logging
@@ -221,7 +222,13 @@ class AdvancedTradingEngine:
         self.strategies = {
             'mean_reversion': MeanReversionStrategy(),
             'momentum': MomentumStrategy(),
-            'rsi': RSIStrategy()
+            'rsi': RSIStrategy(),
+            'macd': MACDStrategy(),
+            'bollinger_bands': BollingerBandsStrategy(),
+            'vwap': VWAPStrategy(),
+            'stochastic': StochasticStrategy(),
+            'parabolic_sar': ParabolicSARStrategy(),
+            'breakout': BreakoutStrategy()
         }
         self.portfolio = {}
         self.strategy_performance = {}
@@ -359,7 +366,7 @@ class AdvancedTradingEngine:
             # Run strategies with priority (avoid conflicts)
             for strategy_name in active_strategies:
                 self.execute_strategy(symbol, strategy_name, market_session)
-                time.sleep(0.5)  # Rate limiting
+                time.sleep(1)  # Rate limiting
     
     def get_enhanced_portfolio_summary(self):
         """Get detailed portfolio summary with proper error handling"""
@@ -426,6 +433,59 @@ class AdvancedTradingEngine:
             error_msg = f"Error getting portfolio summary: {e}"
             logger.error(error_msg)
             self.alert_system.send_alert(error_msg, "ERROR")
+
+    def run_consensus_strategy(self, symbol: str, market_session: MarketSession, required_consensus: int = 3):
+        """
+        Run multiple strategies and execute trades based on consensus
+        """
+        try:
+            data = self.bot.get_market_data(symbol)
+            if data.empty:
+                logger.error(f"No data available for {symbol}")
+                return
+
+            # Get signals from all strategies
+            signals = {}
+            buy_votes = 0
+            sell_votes = 0
+            
+            for strategy_name, strategy in self.strategies.items():
+                try:
+                    signal = strategy.generate_signals(data)
+                    signals[strategy_name] = signal
+                    
+                    if signal['signal'] == 'buy':
+                        buy_votes += 1
+                    elif signal['signal'] == 'sell':
+                        sell_votes += 1
+                        
+                except Exception as e:
+                    logger.error(f"Error in {strategy_name} strategy: {e}")
+                    continue
+            
+            # Log individual strategy signals
+            logger.info(f"\n=== STRATEGY SIGNALS for {symbol} ===")
+            for strategy_name, signal in signals.items():
+                if signal['signal'] == 'buy':
+                    logger.info(f"🟢 {strategy_name.upper()}: BUY - {signal['reason']}")
+                elif signal['signal'] == 'sell':
+                    logger.info(f"🔴 {strategy_name.upper()}: SELL - {signal['reason']}")
+                else:
+                    logger.info(f"⚪ {strategy_name.upper()}: HOLD - {signal['reason']}")
+            
+            # Execute based on consensus
+            if buy_votes >= required_consensus:
+                logger.info(f"📈 CONSENSUS BUY: {buy_votes}/{len(self.strategies)} strategies agree")
+                self.execute_trade(symbol, 'buy', 'consensus', market_session)
+            elif sell_votes >= required_consensus:
+                logger.info(f"📉 CONSENSUS SELL: {sell_votes}/{len(self.strategies)} strategies agree")
+                self.execute_trade(symbol, 'sell', 'consensus', market_session)
+            else:
+                logger.info(f"⚖️ NO CONSENSUS: {buy_votes} buy, {sell_votes} sell, {len(self.strategies)-(buy_votes+sell_votes)} hold")
+                
+        except Exception as e:
+            logger.error(f"Error in consensus strategy for {symbol}: {e}")
+    
 
 # Strategy classes
 class MeanReversionStrategy:
@@ -543,3 +603,326 @@ class RSIStrategy:
             return {"signal": "sell", "reason": f"RSI {current_rsi:.1f} above {self.overbought} (overbought)"}
         else:
             return {"signal": "hold", "reason": f"RSI {current_rsi:.1f} in neutral zone"}
+
+# New strategy classes @date: 2025-07-17
+# These strategies are designed to be more robust and handle edge cases better.        
+class MACDStrategy:
+    def __init__(self, fast_period: int = 12, slow_period: int = 26, signal_period: int = 9):
+        self.fast_period = fast_period
+        self.slow_period = slow_period
+        self.signal_period = signal_period
+        self.name = "MACD"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < self.slow_period + self.signal_period:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate MACD
+            macd_line, macd_signal, macd_hist = talib.MACD(
+                data['Close'].values, 
+                fastperiod=self.fast_period, 
+                slowperiod=self.slow_period, 
+                signalperiod=self.signal_period
+            )
+            
+            # Convert to pandas Series for easier handling
+            macd_line = pd.Series(macd_line, index=data.index)
+            macd_signal = pd.Series(macd_signal, index=data.index)
+            
+            # Current and previous values
+            current_macd = macd_line.iloc[-1]
+            current_signal = macd_signal.iloc[-1]
+            prev_macd = macd_line.iloc[-2]
+            prev_signal = macd_signal.iloc[-2]
+            
+            # Check for crossover
+            if prev_macd <= prev_signal and current_macd > current_signal:
+                return {"signal": "buy", "reason": "MACD line crossed above signal line"}
+            elif prev_macd >= prev_signal and current_macd < current_signal:
+                return {"signal": "sell", "reason": "MACD line crossed below signal line"}
+            else:
+                trend = "bullish" if current_macd > current_signal else "bearish"
+                return {"signal": "hold", "reason": f"No MACD crossover, trend is {trend}"}
+                
+        except Exception as e:
+            logger.error(f"Error in MACD calculation: {e}")
+            return {"signal": "hold", "reason": "MACD calculation error"}
+
+class BollingerBandsStrategy:
+    def __init__(self, period: int = 20, std_dev: float = 2.0):
+        self.period = period
+        self.std_dev = std_dev
+        self.name = "Bollinger Bands"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < self.period:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate Bollinger Bands
+            upper_band, middle_band, lower_band = talib.BBANDS(
+                data['Close'].values, 
+                timeperiod=self.period, 
+                nbdevup=self.std_dev, 
+                nbdevdn=self.std_dev
+            )
+            
+            current_price = data['Close'].iloc[-1]
+            prev_price = data['Close'].iloc[-2]
+            current_upper = upper_band[-1]
+            current_lower = lower_band[-1]
+            prev_upper = upper_band[-2]
+            prev_lower = lower_band[-2]
+            
+            # Buy: Price was below lower band and now moving up
+            if prev_price <= prev_lower and current_price > prev_price and current_price > current_lower:
+                return {"signal": "buy", "reason": f"Price bouncing off lower band at {current_lower:.2f}"}
+            
+            # Sell: Price was above upper band and now moving down
+            elif prev_price >= prev_upper and current_price < prev_price and current_price < current_upper:
+                return {"signal": "sell", "reason": f"Price rejecting upper band at {current_upper:.2f}"}
+            
+            else:
+                # Calculate position within bands
+                bb_position = (current_price - current_lower) / (current_upper - current_lower)
+                return {"signal": "hold", "reason": f"Price at {bb_position:.1%} of band width"}
+                
+        except Exception as e:
+            logger.error(f"Error in Bollinger Bands calculation: {e}")
+            return {"signal": "hold", "reason": "Bollinger Bands calculation error"}
+
+class VWAPStrategy:
+    def __init__(self, volume_threshold: float = 1.2):
+        self.volume_threshold = volume_threshold
+        self.name = "VWAP"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < 20:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate VWAP
+            typical_price = (data['High'] + data['Low'] + data['Close']) / 3
+            vwap = (typical_price * data['Volume']).cumsum() / data['Volume'].cumsum()
+            
+            current_price = data['Close'].iloc[-1]
+            current_vwap = vwap.iloc[-1]
+            current_volume = data['Volume'].iloc[-1]
+            avg_volume = data['Volume'].rolling(20).mean().iloc[-1]
+            
+            volume_ratio = current_volume / avg_volume
+            
+            # Buy: Price below VWAP with above-average volume
+            if current_price < current_vwap and volume_ratio > self.volume_threshold:
+                return {"signal": "buy", "reason": f"Price below VWAP with {volume_ratio:.1f}x volume"}
+            
+            # Sell: Price significantly above VWAP
+            elif current_price > current_vwap * 1.02:
+                return {"signal": "sell", "reason": f"Price {((current_price/current_vwap-1)*100):.1f}% above VWAP"}
+            
+            else:
+                position = "above" if current_price > current_vwap else "below"
+                return {"signal": "hold", "reason": f"Price {position} VWAP, volume {volume_ratio:.1f}x average"}
+                
+        except Exception as e:
+            logger.error(f"Error in VWAP calculation: {e}")
+            return {"signal": "hold", "reason": "VWAP calculation error"}
+
+class StochasticStrategy:
+    def __init__(self, k_period: int = 14, d_period: int = 3, oversold: int = 20, overbought: int = 80):
+        self.k_period = k_period
+        self.d_period = d_period
+        self.oversold = oversold
+        self.overbought = overbought
+        self.name = "Stochastic"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < self.k_period + self.d_period:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate Stochastic oscillator
+            slowk, slowd = talib.STOCH(
+                data['High'].values,
+                data['Low'].values,
+                data['Close'].values,
+                fastk_period=self.k_period,
+                slowk_period=self.d_period,
+                slowd_period=self.d_period
+            )
+            
+            current_k = slowk[-1]
+            current_d = slowd[-1]
+            prev_k = slowk[-2]
+            prev_d = slowd[-2]
+            
+            # Buy: %K crosses above %D in oversold territory
+            if (prev_k <= prev_d and current_k > current_d and current_k < self.oversold):
+                return {"signal": "buy", "reason": f"Stochastic bullish crossover in oversold territory (%K={current_k:.1f})"}
+            
+            # Sell: %K crosses below %D in overbought territory
+            elif (prev_k >= prev_d and current_k < current_d and current_k > self.overbought):
+                return {"signal": "sell", "reason": f"Stochastic bearish crossover in overbought territory (%K={current_k:.1f})"}
+            
+            else:
+                if current_k < self.oversold:
+                    condition = "oversold"
+                elif current_k > self.overbought:
+                    condition = "overbought"
+                else:
+                    condition = "neutral"
+                return {"signal": "hold", "reason": f"Stochastic {condition} (%K={current_k:.1f}, %D={current_d:.1f})"}
+                
+        except Exception as e:
+            logger.error(f"Error in Stochastic calculation: {e}")
+            return {"signal": "hold", "reason": "Stochastic calculation error"}
+
+class ParabolicSARStrategy:
+    def __init__(self, acceleration: float = 0.02, maximum: float = 0.2):
+        self.acceleration = acceleration
+        self.maximum = maximum
+        self.name = "Parabolic SAR"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < 10:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate Parabolic SAR
+            sar = talib.SAR(
+                data['High'].values,
+                data['Low'].values,
+                acceleration=self.acceleration,
+                maximum=self.maximum
+            )
+            
+            current_price = data['Close'].iloc[-1]
+            prev_price = data['Close'].iloc[-2]
+            current_sar = sar[-1]
+            prev_sar = sar[-2]
+            
+            # Buy: Price crosses above SAR
+            if prev_price <= prev_sar and current_price > current_sar:
+                return {"signal": "buy", "reason": f"Price crossed above SAR at {current_sar:.2f}"}
+            
+            # Sell: Price crosses below SAR
+            elif prev_price >= prev_sar and current_price < current_sar:
+                return {"signal": "sell", "reason": f"Price crossed below SAR at {current_sar:.2f}"}
+            
+            else:
+                trend = "bullish" if current_price > current_sar else "bearish"
+                return {"signal": "hold", "reason": f"SAR trend {trend} (SAR: {current_sar:.2f})"}
+                
+        except Exception as e:
+            logger.error(f"Error in Parabolic SAR calculation: {e}")
+            return {"signal": "hold", "reason": "Parabolic SAR calculation error"}
+
+class BreakoutStrategy:
+    def __init__(self, lookback_period: int = 20, volume_threshold: float = 1.5):
+        self.lookback_period = lookback_period
+        self.volume_threshold = volume_threshold
+        self.name = "Breakout"
+    
+    def _validate_data(self, data: pd.DataFrame) -> bool:
+        """Validate that data has required columns"""
+        required_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            logger.error(f"Missing required columns: {missing_columns}")
+            return False
+        return True
+    
+    def generate_signals(self, data: pd.DataFrame) -> Dict[str, str]:
+        if not self._validate_data(data):
+            return {"signal": "hold", "reason": "Invalid data format"}
+        
+        if len(data) < self.lookback_period:
+            return {"signal": "hold", "reason": "Insufficient data"}
+        
+        try:
+            # Calculate support and resistance (excluding current candle)
+            recent_data = data.iloc[:-1]  # Exclude current candle
+            resistance = recent_data['High'].rolling(self.lookback_period).max().iloc[-1]
+            support = recent_data['Low'].rolling(self.lookback_period).min().iloc[-1]
+            
+            current_price = data['Close'].iloc[-1]
+            current_volume = data['Volume'].iloc[-1]
+            avg_volume = data['Volume'].rolling(self.lookback_period).mean().iloc[-1]
+            
+            volume_ratio = current_volume / avg_volume
+            
+            # Buy: Break above resistance with volume
+            if current_price > resistance and volume_ratio > self.volume_threshold:
+                return {"signal": "buy", "reason": f"Breakout above resistance {resistance:.2f} with {volume_ratio:.1f}x volume"}
+            
+            # Sell: Break below support with volume
+            elif current_price < support and volume_ratio > self.volume_threshold:
+                return {"signal": "sell", "reason": f"Breakdown below support {support:.2f} with {volume_ratio:.1f}x volume"}
+            
+            else:
+                return {"signal": "hold", "reason": f"Price between support {support:.2f} and resistance {resistance:.2f}"}
+                
+        except Exception as e:
+            logger.error(f"Error in Breakout calculation: {e}")
+            return {"signal": "hold", "reason": "Breakout calculation error"}

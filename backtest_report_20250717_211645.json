@@ -1,0 +1,58 @@
+{
+  "period": "2025-07-07 to 2025-07-16",
+  "initial_capital": 100000,
+  "final_value": 100000,
+  "total_return_pct": 0.0,
+  "total_return_dollar": 0,
+  "total_trades": 0,
+  "win_rate_pct": 0,
+  "avg_win": 0,
+  "avg_loss": 0,
+  "volatility_pct": 0.0,
+  "sharpe_ratio": 0,
+  "max_drawdown_pct": 0,
+  "strategy_performance": {},
+  "trade_history": [],
+  "equity_curve": [
+    {
+      "date": "2025-07-07 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-08 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-09 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-10 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-11 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-14 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-15 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    },
+    {
+      "date": "2025-07-16 00:00:00",
+      "portfolio_value": 100000,
+      "cash": 100000
+    }
+  ]
+}
